@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fortnite Sprite Checklist – Chapter 7 Season 3 (Extracted)</title>
+    <link rel="stylesheet" href="styles.css" />
+    
+    </style>
+  </head>
+  <body>
+    <h1>Fortnite Sprite Checklist</h1>
+    <p class="subtitle">Chapter 7 Season 3 · Extracted individual sprites + interactive table</p>
+
+    <div class="legend">
+      <span><span class="swatch" style="background: var(--rare)"></span> Rare</span>
+      <span><span class="swatch" style="background: var(--epic)"></span> Epic</span>
+      <span><span class="swatch" style="background: var(--legendary)"></span> Legendary</span>
+      <span><span class="swatch" style="background: var(--mythic)"></span> Mythic</span>
+      <span style="margin-left: 12px">Click a sprite → Collected (green) → Mastered (gold) → Clear</span>
+    </div>
+
+    <div class="controls">
+      <button id="btn-clear" class="danger">Clear All Marks</button>
+      <button id="btn-export">Export Progress</button>
+      <button id="btn-import">Import Progress</button>
+      <span class="stats" id="stats">0 collected · 0 mastered</span>
+    </div>
+
+    <div class="table-wrap">
+      <table id="sprite-table">
+        <thead>
+          <tr>
+            <th style="left: 0; z-index: 6; position: sticky; background: #1a1a28">Style</th>
+            <!-- Rare -->
+            <th class="rarity-rare">Water</th>
+            <th class="rarity-rare">Fishy</th>
+            <th class="rarity-rare">Air</th>
+            <th class="rarity-rare">Earth</th>
+            <th class="rarity-rare">Fire</th>
+            <!-- Epic -->
+            <th class="rarity-epic">Ghost</th>
+            <th class="rarity-epic">Duck</th>
+            <th class="rarity-epic">Demon</th>
+            <th class="rarity-epic">King</th>
+            <th class="rarity-epic">Striker</th>
+            <th class="rarity-epic">Aura</th>
+            <!-- Legendary -->
+            <th class="rarity-legendary">Peekv Peely</th>
+            <th class="rarity-legendary">Lootin' Llama</th>
+            <th class="rarity-legendary">Seven</th>
+            <th class="rarity-legendary">Dream</th>
+            <th class="rarity-legendary">Boss</th>
+            <th class="rarity-legendary">Punk</th>
+            <!-- Mythic -->
+            <th class="rarity-mythic">Burnt Peanut</th>
+            <th class="rarity-mythic">Vinni Jr.</th>
+            <th class="rarity-mythic">Pollo</th>
+            <th class="rarity-mythic">Ironmouse</th>
+            <th class="rarity-mythic">John Wick</th>
+            <th class="rarity-mythic">Batman</th>
+            <th class="rarity-mythic">Grim</th>
+            <th class="rarity-mythic">Zero Point</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <!-- Filled by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // Data: which sprites exist per style (from extraction)
+      const presence = {
+        normal: [
+          'water',
+          'fishy',
+          'air',
+          'earth',
+          'fire',
+          'ghost',
+          'duck',
+          'demon',
+          'king',
+          'striker',
+          'aura',
+          'peekv-peely',
+          'lootin-llama',
+          'seven',
+          'dream',
+          'boss',
+          'punk',
+          'burnt-peanut',
+          'vinni-jr',
+          'pollo',
+          'ironmouse',
+          'john-wick',
+          'batman',
+          'grim',
+          'zero-point',
+        ],
+        gold: [
+          'water',
+          'fishy',
+          'air',
+          'earth',
+          'fire',
+          'ghost',
+          'duck',
+          'demon',
+          'king',
+          'striker',
+          'aura',
+          'peekv-peely',
+          'lootin-llama',
+          'seven',
+          'dream',
+          'boss',
+          'punk',
+          'batman',
+          'grim',
+          'zero-point',
+        ],
+        gummy: [
+          'water',
+          'fishy',
+          'air',
+          'earth',
+          'fire',
+          'ghost',
+          'duck',
+          'demon',
+          'king',
+          'striker',
+          'aura',
+          'peekv-peely',
+          'lootin-llama',
+          'seven',
+          'dream',
+          'boss',
+          'punk',
+          'batman',
+          'grim',
+          'zero-point',
+        ],
+        galaxy: [
+          'water',
+          'fishy',
+          'air',
+          'earth',
+          'fire',
+          'ghost',
+          'duck',
+          'demon',
+          'king',
+          'striker',
+          'aura',
+          'peekv-peely',
+          'lootin-llama',
+          'seven',
+          'dream',
+          'boss',
+          'punk',
+          'batman',
+          'grim',
+          'zero-point',
+        ],
+        holofoil: ['water', 'air', 'fire', 'ghost', 'duck', 'king', 'striker', 'peekv-peely', 'seven', 'batman', 'grim', 'zero-point'],
+        cube: ['fishy', 'earth', 'fire', 'dream', 'boss', 'punk', 'batman', 'grim', 'zero-point'],
+        quack: ['water', 'earth', 'fire', 'zero-point'],
+        gem: ['water', 'earth', 'duck', 'demon', 'aura', 'lootin-llama', 'punk', 'grim', 'zero-point'],
+      };
+
+      const styles = ['normal', 'gold', 'gummy', 'galaxy', 'holofoil', 'cube', 'quack', 'gem'];
+      const sprites = [
+        'water',
+        'fishy',
+        'air',
+        'earth',
+        'fire',
+        'ghost',
+        'duck',
+        'demon',
+        'king',
+        'striker',
+        'aura',
+        'peekv-peely',
+        'lootin-llama',
+        'seven',
+        'dream',
+        'boss',
+        'punk',
+        'burnt-peanut',
+        'vinni-jr',
+        'pollo',
+        'ironmouse',
+        'john-wick',
+        'batman',
+        'grim',
+        'zero-point',
+      ];
+
+      const styleLabels = {
+        normal: 'NORMAL',
+        gold: 'GOLD',
+        gummy: 'GUMMY',
+        galaxy: 'GALAXY',
+        holofoil: 'HOLOFOIL',
+        cube: 'CUBE',
+        quack: 'QUACK',
+        gem: 'GEM',
+      };
+
+      // Progress: key = "style_sprite", value = 1 (collected) or 2 (mastered)
+      let progress = JSON.parse(localStorage.getItem('fn-sprite-table-progress') || '{}');
+
+      const tbody = document.getElementById('tbody');
+      const statsEl = document.getElementById('stats');
+      const toast = document.getElementById('toast');
+
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1600);
+      }
+
+      function save() {
+        localStorage.setItem('fn-sprite-table-progress', JSON.stringify(progress));
+        updateStats();
+      }
+
+      function updateStats() {
+        let c = 0,
+          m = 0;
+        for (const v of Object.values(progress)) {
+          if (v === 1 || v === 2) c++;
+          if (v === 2) m++;
+        }
+        statsEl.textContent = `${c} collected · ${m} mastered`;
+      }
+
+      function buildTable() {
+        tbody.innerHTML = '';
+        for (const style of styles) {
+          const tr = document.createElement('tr');
+          const labelTd = document.createElement('td');
+          labelTd.className = `style-label style-${style}`;
+          labelTd.textContent = styleLabels[style];
+          tr.appendChild(labelTd);
+
+          for (const sprite of sprites) {
+            const td = document.createElement('td');
+            td.className = 'sprite-cell';
+            const key = `${style}_${sprite}`;
+            const exists = presence[style].includes(sprite);
+
+            if (exists) {
+              const img = document.createElement('img');
+              img.src = `sprites/${key}.png`;
+              img.alt = `${styleLabels[style]} ${sprite}`;
+              img.loading = 'lazy';
+              td.appendChild(img);
+              td.dataset.key = key;
+
+              // Apply saved state
+              if (progress[key] === 1) td.classList.add('collected');
+              else if (progress[key] === 2) td.classList.add('mastered');
+
+              td.addEventListener('click', () => {
+                const cur = progress[key] || 0;
+                if (cur === 0) {
+                  progress[key] = 1;
+                  td.classList.add('collected');
+                  td.classList.remove('mastered');
+                  showToast('Collected');
+                } else if (cur === 1) {
+                  progress[key] = 2;
+                  td.classList.remove('collected');
+                  td.classList.add('mastered');
+                  showToast('Mastered!');
+                } else {
+                  delete progress[key];
+                  td.classList.remove('collected', 'mastered');
+                  showToast('Cleared');
+                }
+                save();
+              });
+            } else {
+              td.classList.add('empty');
+            }
+            tr.appendChild(td);
+          }
+          tbody.appendChild(tr);
+        }
+        updateStats();
+      }
+
+      document.getElementById('btn-clear').addEventListener('click', () => {
+        if (confirm('Clear all collection marks?')) {
+          progress = {};
+          save();
+          buildTable();
+          showToast('All cleared');
+        }
+      });
+
+      document.getElementById('btn-export').addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify(progress, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'fortnite-sprite-progress.json';
+        a.click();
+        showToast('Exported');
+      });
+
+      document.getElementById('btn-import').addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            try {
+              progress = JSON.parse(reader.result);
+              save();
+              buildTable();
+              showToast('Imported');
+            } catch {
+              showToast('Invalid file');
+            }
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+      });
+
+      buildTable();
+    </script>
+  </body>
+</html>
