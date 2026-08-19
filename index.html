@@ -232,13 +232,22 @@
       }
 
       function updateStats() {
-        let c = 0,
-          m = 0;
-        for (const v of Object.values(progress)) {
-          if (v === 1 || v === 2) c++;
-          if (v === 2) m++;
+        let total = 0;
+         for (const style of styles) {
+          for (const sprite of sprites) {
+            const key = `${style}_${sprite}`;
+            const exists = presence[style].includes(sprite);
+            if(exists) {
+              total++;
+            }
+          }
         }
-        statsEl.textContent = `${c} collected · ${m} mastered`;
+        console.log(progress);
+        const collected = Object.values(progress).filter((v) => v === 1 || v === 2).length;
+        const mastered = Object.values(progress).filter((v) => v === 2).length;
+
+        console.log( { collected, mastered, total });
+        statsEl.textContent = `${collected} collected ; ${mastered} mastered ; ${total} total ; ${total - collected} remaining`;
       }
 
       function buildTable() {
